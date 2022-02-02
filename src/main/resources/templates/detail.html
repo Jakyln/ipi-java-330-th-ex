@@ -32,12 +32,12 @@
 
 <div class="container">
     <h2>Détail du Commercial [[${employe.className}]]</h2>
-    
-    <form id="saveForm" action="http://localhost:8080/employes/commercial/6" method="post" class="row">
-        <div class="col-lg-6">
+
+    <form id="saveForm" th:action="|/employes/${#strings.toLowerCase(employe.className)}|" method="post" class="row">
+    <div class="col-lg-6">
             <div class="form-group">
                 <label class="form-control-label" for="nom">Nom</label>
-                <input type="text" th:value="${employe.nom}" class="form-control" name="nom" id="nom">
+                <input type="text" th:value="${#strings.toUpperCase(employe.nom)}" class="form-control" name="nom" id="nom">
 
                 <label class="form-control-label" for="prenom">Prénom</label>
                 <input type="text" th:value="${employe.getPrenom()}" class="form-control" name="prenom" id="prenom">
@@ -59,37 +59,81 @@
                 <div>
                     <label class="form-control-label" for="nom">Prime Annuelle</label>
                     <div class="input-group">
-                        <input type="text" th:value="${employe.primeAnnuelle}" class="form-control" name="primeAnnuelle" id="primeAnnuelle">
+                        <span type="text" th:text="${#numbers.formatCurrency(employe.primeAnnuelle)}" class="form-control" name="primeAnnuelle" id="primeAnnuelle">
+                        </span>
                         <div class="input-group-append">
-                            <span class="input-group-text">€</span>
+                            <span class="input-group-text"></span>
                         </div>
                     </div>
                 </div>
 
-
+                <!--   Technicien -->
                 <label class="form-control-label" for="nom">Date d'embauche</label>
-                <input type="text" th:value="${employe.getDateEmbauche()}" class="form-control" name="dateEmbauche" id="dateEmbauche">
+                <input type="text" th:value="${#temporals.format(employe.dateEmbauche, 'dd/MM/yyyy')}" class="form-control" name="dateEmbauche" id="dateEmbauche">
             </div>
         </div>
-        <!-- <div class="col-lg-6">
+        <div class="col-lg-6" th:if="${employe.className.equals('Commercial')}">
             <label class="form-control-label" for="performance">Performance</label>
-            <input type="number" value="5" class="form-control" name="performance" id="performance">
+            <input type="number" th:value="${employe.performance}" class="form-control" name="performance" id="performance">
 
             <label class="form-control-label" for="caAnnuel">CA Annuel</label>
             <div class="input-group">
-                <input type="number" value="0.0" class="form-control" name="caAnnuel" id="caAnnuel">
+                <input type="number" th:value="${employe.caAnnuel}" class="form-control" name="caAnnuel" id="caAnnuel">
                 <div class="input-group-append">
                     <span class="input-group-text">€</span>
                 </div>
             </div>
-        </div>  -->
+
+<!--            Technicien-->
+            <div class="col-lg-6" th:if="${employe instanceof T(com.ipiecoles.java.java320.model.Technicien)}">
+                <label class="form-control-label" for="grade">Grade</label>
+                <input type="number" th:value="${employe.grade}" class="form-control" name="grade" id="grade">
+                <div th:unless="${employe.id}">
+                    <label class="form-control-label">Manager</label>
+                    <ul class="list-group" th:if="${employe.manager}">
+                        <li class="list-group-item">
+                            <a th:href="|/techniciens/${employe.id}/manager/delete|" class="btn btn-sm btn-danger float-right"><i class="fa fa-remove"></i></a>
+                            <a th:href="|/employes/${employe.manager.id}|"><span th:text="${employe.manager.prenom}">Benjamin</span>
+                                <span th:text="${employe.manager.nom}">David</span>
+                                <span class="badge badge-primary" th:text="${employe.matricule}">M0001,</span></a>
+                        </li>
+                    </ul>
+                    <div th:unless="${employe.manager}">
+                        Input + bouton pour associer un manager au technicien
+                    </div>
+                </div>
+            </div
+
+        <div class="col-lg-6">
+            <label class="form-control-label" for="performance">Equipe</label>
+            <div class="row">
+                <div class="col-lg-12">
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <a href="http://localhost:8080/employes/10">Mélissa Rodriguez T00006</a>
+                                <a href="http://localhost:8080/managers/5/techniciens/10/delete" class="btn btn-sm btn-danger float-right"></a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="http://localhost:8080/employes/4">Julie Petit T00000</a>
+                                <a href="http://localhost:8080/managers/5/techniciens/4/delete" class="btn btn-sm btn-danger float-right"></a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="http://localhost:8080/employes/9">Alexis Laine T00005</a>
+                                <a href="http://localhost:8080/managers/5/techniciens/9/delete" class="btn btn-sm btn-danger float-right"></a>
+                            <a href="http://localhost:8080/employes/15">Ines Aubert T00011</a>
+                                <a href="http://localhost:8080/managers/5/techniciens/15/delete" class="btn btn-sm btn-danger float-right"></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </form>
     
     
     <div class="row mt-2">
         <div class="col-lg-6">
             <input form="saveForm" class="btn btn-primary" type="submit" value="Enregistrer">
-            <a href="http://localhost:8080/employes/6/delete" class="btn btn-danger">Supprimer</a>
+            <a th:href="|/employes/${employe.id}/delete|" class="btn btn-danger">Supprimer</a>
         </div>
     </div>
 </div>
