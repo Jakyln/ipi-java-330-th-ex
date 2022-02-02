@@ -4,6 +4,7 @@ import com.ipiecoles.java.java320.model.Employe;
 import com.ipiecoles.java.java320.repository.EmployeRepository;
 import com.ipiecoles.java.java320.service.EmployeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -50,6 +51,10 @@ public class EmployeController {
         return model;
     }
 
+    /*RequestMapping(
+            method = RequestMethod.GET,
+            value = "/employes"
+    )
     public ModelAndView getAllEmployeSorted(
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "10") Integer size,
@@ -59,19 +64,27 @@ public class EmployeController {
         ModelAndView employeModelAndView = new ModelAndView("list");
         //sortProperty n'est pas un attribut d'Employé => 400 BAD REQUEST
         List<String> properties = Arrays.asList("id","matricule","nom","prenom","salaire","dateEmbauche");
-        if(!properties.contains(sortProperty))
-            throw new IllegalArgumentException("La propriété de tri " + sortProperty + "est incorrecte.");
-        //Valeurs négatives pour page et size => 400 BAD REQUEST
-        if(page < 0 || size <= 0)
-            throw new IllegalArgumentException("Les arguments page et size doivent être positif.");
-        //contraindre size <= 50 => 400 BAD REQUEST
-        if(size > 50)
-            throw new IllegalArgumentException("L'argument size doit être inférieur ou égale à 50.");
-        //page et size cohérents par rapport au nombre de lignes de la table => 400 BAD REQUEST
-        if(page*size > employeService.countAllEmploye())
-            throw new IllegalArgumentException("Les arguments page et size doivent représenter des valeurs existantes.");
-        employeModelAndView.addObject("items", employeService.findAllEmployes(page, size, sortDirection.toString(), sortProperty));
+        employeModelAndView.addObject("employes", employeService.findAllEmployes(page, size, sortProperty, sortDirection.toString()));
+        /*employeModelAndView.addObject("size", size);
+        employeModelAndView.addObject("page", page);
         return employeModelAndView;
+    }*/
+    @RequestMapping(
+            method = RequestMethod.GET,
+            value = "/employes"
+    )
+    public ModelAndView listEmployes(
+            @RequestParam Integer page,
+            @RequestParam Integer size,
+            @RequestParam String sortProperty,
+            @RequestParam String sortDirection
+    ){
+        Page<Employe> employes = employeService.findAllEmployes(page, size, sortProperty, sortDirection);
+        ModelAndView model = new ModelAndView("list");
+        model.addObject("start", page * size + 1);
+        model.addObject("end", page * size + employes.getNumberOfElements());
+        model.addObject("employes", employes); // derniere page ara pas forcement 10 elements
+        return model;
     }
 
 }

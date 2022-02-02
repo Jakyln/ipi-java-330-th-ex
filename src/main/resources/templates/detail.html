@@ -93,40 +93,33 @@
                     <ul class="list-group" th:if="${employe.manager}">
                         <li class="list-group-item">
                             <a th:href="|/techniciens/${employe.id}/manager/delete|" class="btn btn-sm btn-danger float-right"><i class="fa fa-remove"></i></a>
-                            <a th:href="|/employes/${employe.manager.id}|"><span th:text="${employe.manager.prenom}">Benjamin</span>
+                            <a th:href="|/employes/${employe.manager.id}|"><span th:text="${employe.manager.prenom}"></span>
                                 <span th:text="${employe.manager.nom}">David</span>
-                                <span class="badge badge-primary" th:text="${employe.matricule}">M0001,</span></a>
+                                <span class="badge badge-primary" th:text="${employe.matricule}">,</span></a>
                         </li>
                     </ul>
                     <div th:unless="${employe.manager}">
                         Input + bouton pour associer un manager au technicien
                     </div>
                 </div>
-            </div
+            </div>
 
-        <div class="col-lg-6">
-            <label class="form-control-label" for="performance">Equipe</label>
-            <div class="row">
-                <div class="col-lg-12">
-                    <ul class="list-group">
-                        <li class="list-group-item">
-                            <a href="http://localhost:8080/employes/10">Mélissa Rodriguez T00006</a>
-                                <a href="http://localhost:8080/managers/5/techniciens/10/delete" class="btn btn-sm btn-danger float-right"></a>
-                        </li>
-                        <li class="list-group-item">
-                            <a href="http://localhost:8080/employes/4">Julie Petit T00000</a>
-                                <a href="http://localhost:8080/managers/5/techniciens/4/delete" class="btn btn-sm btn-danger float-right"></a>
-                        </li>
-                        <li class="list-group-item">
-                            <a href="http://localhost:8080/employes/9">Alexis Laine T00005</a>
-                                <a href="http://localhost:8080/managers/5/techniciens/9/delete" class="btn btn-sm btn-danger float-right"></a>
-                            <a href="http://localhost:8080/employes/15">Ines Aubert T00011</a>
-                                <a href="http://localhost:8080/managers/5/techniciens/15/delete" class="btn btn-sm btn-danger float-right"></a>
-                        </li>
-                    </ul>
+            <div class="col-lg-6" th:if="${employe instanceof T(com.ipiecoles.java.java320.model.Manager)}">
+                <label class="form-control-label" for="performance">Equipe</label>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <ul class="list-group" th:each="tech : ${employe.equipe}">
+                            <!--/*@thymesVar id="tech" type="com.ipiecoles.java.java320.model.Technicien"*/-->
+                            <li class="list-group-item">
+                                <a th:href="|/employes/${tech.id}|">
+                                    <span th:text="${tech.prenom}">Mélissa</span> <span th:text="${tech.nom}"></span>
+                                    <span class="badge badge-primary" th:text="${tech.matricule}"></span></a>
+                                <a th:href="|/managers/${employe.id}/techniciens/${tech.id}/delete|" class="btn btn-sm btn-danger float-right"><i class="fa fa-remove"></i></a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </div>
     </form>
     
     
