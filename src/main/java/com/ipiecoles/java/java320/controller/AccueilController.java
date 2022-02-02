@@ -12,7 +12,7 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class AccueilController {
 
-    @Autowired
+    /*@Autowired
     private EmployeService employeService;
 
     @RequestMapping(
@@ -23,5 +23,5 @@ public class AccueilController {
         ModelAndView modelAndView = new ModelAndView("accueil");
         modelAndView.addObject("nbEmployes", employeService.countAllEmploye());
         return modelAndView;
-    }
+    }*/
 }

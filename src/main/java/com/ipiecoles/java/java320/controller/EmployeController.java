@@ -1,11 +1,15 @@
 package com.ipiecoles.java.java320.controller;
 
+import com.ipiecoles.java.java320.model.Commercial;
 import com.ipiecoles.java.java320.model.Employe;
+import com.ipiecoles.java.java320.model.Manager;
+import com.ipiecoles.java.java320.model.Technicien;
 import com.ipiecoles.java.java320.repository.EmployeRepository;
 import com.ipiecoles.java.java320.service.EmployeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,10 +17,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 @Controller
 public class EmployeController {
@@ -36,6 +42,16 @@ public class EmployeController {
         model.addObject("employe", employeService.findById(id));
         return model;
     }
+
+    @RequestMapping(
+            method = RequestMethod.GET,
+            value = "/"
+    )
+    public String accueil(){
+        return "accueil";
+    }
+
+
 
     @RequestMapping(
             method = RequestMethod.GET,
@@ -85,6 +101,56 @@ public class EmployeController {
         model.addObject("end", page * size + employes.getNumberOfElements());
         model.addObject("employes", employes); // derniere page ara pas forcement 10 elements
         return model;
+    }
+
+    @RequestMapping(
+            method = RequestMethod.GET,
+            value = "/employes/new/{typeEmploye}"
+    )
+    public ModelAndView newEmploye(@PathVariable String typeEmploye){
+        ModelAndView model = new ModelAndView("detail");
+        switch(typeEmploye.toLowerCase()){
+            case "commercial":
+                model.addObject("employe" , new Commercial());
+                break;
+            case "technicien":
+                model.addObject("employe" , new Technicien());
+                break;
+            case "manager":
+                model.addObject("employe" , new Manager());
+                break;
+        }
+        return model;
+    }
+
+
+
+    @RequestMapping(
+            method = RequestMethod.POST,
+            value = "/employes/technicien",
+            consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE
+    )
+    public RedirectView createTechnicien(Technicien technicien){
+        if(technicien.getId() == null){
+            //Création
+            technicien = employeService.creerEmploye(technicien);
+        }
+        else {
+            //Modification
+            technicien = employeService.updateEmploye(technicien.getId(), technicien);
+        }
+        //Redirection vers /employes/id
+        return new RedirectView("/employes/" + technicien.getId());
+    }
+
+    @RequestMapping(
+            method = RequestMethod.GET,
+            value = "/employes/{id}/delete"
+    )
+    public RedirectView deleteEmploye(@PathVariable Long id){
+        employeService.deleteEmploye(id);
+//        modelAndView.setStatus(HttpStatus.CREATED);
+        return new RedirectView("/employes?page=0&size=10&sortProperty=matricule&sortDirection=ASC");
     }
 
 }

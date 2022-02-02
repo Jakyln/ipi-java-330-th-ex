@@ -34,55 +34,10 @@
     <h2>Détail du Commercial [[${employe.className}]]</h2>
 
     <form id="saveForm" th:action="|/employes/${#strings.toLowerCase(employe.className)}|" method="post" class="row">
-    <div class="col-lg-6">
-            <div class="form-group">
-                <label class="form-control-label" for="nom">Nom</label>
-                <input type="text" th:value="${#strings.toUpperCase(employe.nom)}" class="form-control" name="nom" id="nom">
-
-                <label class="form-control-label" for="prenom">Prénom</label>
-                <input type="text" th:value="${employe.getPrenom()}" class="form-control" name="prenom" id="prenom">
-
-                <label class="form-control-label" for="matricule">Matricule</label>
-                <input type="text" th:value="${employe.matricule}" class="form-control" name="matricule" id="matricule">
-            </div>
-        </div>
-        <div class="col-lg-6">
-            <div class="form-group">
-                <label class="form-control-label" for="nom">Salaire</label>
-                <div class="input-group">
-                    <input type="number" th:value="${employe.salaire}" class="form-control" name="salaire" id="salaire">
-                    <div class="input-group-append">
-                        <span class="input-group-text">€</span>
-                    </div>
-                </div>
-
-                <div>
-                    <label class="form-control-label" for="nom">Prime Annuelle</label>
-                    <div class="input-group">
-                        <span type="text" th:text="${#numbers.formatCurrency(employe.primeAnnuelle)}" class="form-control" name="primeAnnuelle" id="primeAnnuelle">
-                        </span>
-                        <div class="input-group-append">
-                            <span class="input-group-text"></span>
-                        </div>
-                    </div>
-                </div>
-
-                <!--   Technicien -->
-                <label class="form-control-label" for="nom">Date d'embauche</label>
-                <input type="text" th:value="${#temporals.format(employe.dateEmbauche, 'dd/MM/yyyy')}" class="form-control" name="dateEmbauche" id="dateEmbauche">
-            </div>
-        </div>
-        <div class="col-lg-6" th:if="${employe.className.equals('Commercial')}">
-            <label class="form-control-label" for="performance">Performance</label>
-            <input type="number" th:value="${employe.performance}" class="form-control" name="performance" id="performance">
-
-            <label class="form-control-label" for="caAnnuel">CA Annuel</label>
-            <div class="input-group">
-                <input type="number" th:value="${employe.caAnnuel}" class="form-control" name="caAnnuel" id="caAnnuel">
-                <div class="input-group-append">
-                    <span class="input-group-text">€</span>
-                </div>
-            </div>
+        <input type="hidden" th:value="${employe.id}" name="id">
+        <div th:replace="fragments/header :: inputText('Nom','nom',${#strings.toUpperCase(employe.nom)})"></div>
+        <div th:replace="fragments/header :: inputText('Prénom','prenom',${employe.prenom})"></div>
+        <div th:replace="fragments/header :: inputText('Matricule','matricule',${employe.matricule})"></div>
 
 <!--            Technicien-->
             <div class="col-lg-6" th:if="${employe instanceof T(com.ipiecoles.java.java320.model.Technicien)}">

@@ -32,7 +32,11 @@
 
 <div class="container mt-2">
     <div class="jumbotron">
-        <h1>Bienvenue dans l'interface de gestion des [[${nbEmployes}]] employés !</h1>
+             <h1>Bienvenue dans l'interface de gestion des [[${@employeService.countAllEmploye()}]] employés !</h1>
+        <!--OU-->
+        <!--  <h1>Bienvenue dans l'interface de gestion des [[${nbEmployes}]] employés !</h1> -->
+
+
         <p>Cette application web est paramétrée pour récupérer les données d'une base <em>entreprise</em> sur le serveur MySQL situé à <code>http://localhost:3306</code>.</p>
         <p>Il est nécessaire de développer les contrôleurs et de compléter les JSP existantes. Voici l'ensemble des fonctionnalités :</p>
         <ul class="list-group">
